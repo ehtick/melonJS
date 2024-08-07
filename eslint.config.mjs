@@ -7,11 +7,17 @@ const jsDocConfig = jsdoc.configs["flat/recommended-typescript-error"];
 
 export default tseslint.config(
 	eslint.configs.recommended,
-	...tseslint.configs.recommended,
+	...tseslint.configs.strictTypeChecked,
 	{
 		name: "eslint/global-ignores",
 		// globally ignore below directories and files
-		ignores: ["build", "docs/**/*", "rollup.config.mjs", "scripts/build.js"],
+		ignores: [
+			"**/build",
+			"**/docs/**/*",
+			"**/node_modules",
+			"**/examples",
+			"**/debug-plugin",
+		],
 	},
 	{
 		name: "eslint/global-rules",
@@ -22,7 +28,7 @@ export default tseslint.config(
 				...globals.browser,
 			},
 		},
-		files: ["src/**/*.js", "src/**/*.ts", "tests/**/*.js"],
+		files: ["**/src/**/*.js", "**/tests/**/*.js"],
 		plugins: {
 			jsdoc,
 		},
@@ -30,10 +36,11 @@ export default tseslint.config(
 			// http://eslint.org/docs/rules/
 			"accessor-pairs": "error",
 			"array-callback-return": "error",
-			"arrow-body-style": ["error", "as-needed"],
+			"arrow-body-style": ["error", "always"],
 			"block-scoped-var": "error",
 			camelcase: ["off", { properties: "never" }],
 			"constructor-super": "error",
+			curly: ["error", "all"],
 			eqeqeq: ["error", "allow-null"],
 			"func-call-spacing": ["error", "never"],
 			"for-direction": "error",
@@ -140,7 +147,13 @@ export default tseslint.config(
 			yoda: ["error", "never"],
 			"jsdoc/require-hyphen-before-param-description": "error",
 			"jsdoc/no-undefined-types": "off",
+			"@typescript-eslint/no-dynamic-delete": "off",
+			"@typescript-eslint/no-extraneous-class": "off",
 		},
+	},
+	{
+		files: ["**/*.js", "**/*.mjs"],
+		...tseslint.configs.disableTypeChecked,
 	},
 	{
 		...jsDocConfig,
@@ -148,8 +161,34 @@ export default tseslint.config(
 		rules: {
 			"no-undef": "off",
 			"no-unused-vars": "off",
+			"prefer-template": "error",
 			"@typescript-eslint/no-explicit-any": "off",
+			"@typescript-eslint/ban-ts-comment": "off",
+			"@typescript-eslint/no-dynamic-delete": "off",
+			"@typescript-eslint/no-unsafe-call": "off",
+			"@typescript-eslint/no-unsafe-member-access": "off",
+			"@typescript-eslint/no-unsafe-argument": "off",
+			"@typescript-eslint/no-unsafe-assignment": "off",
+			"@typescript-eslint/no-unnecessary-condition": "off",
+			"@typescript-eslint/no-invalid-void-type": "off",
+			"@typescript-eslint/no-unsafe-return": "off",
+			"@typescript-eslint/no-non-null-assertion": "off",
+			"@typescript-eslint/no-unnecessary-type-assertion": "off",
+			"@typescript-eslint/no-empty-object-type": "off",
+			"@typescript-eslint/restrict-template-expressions": [
+				"error",
+				{ allowNumber: true },
+			],
 			...jsDocConfig.rules,
+			"jsdoc/require-jsdoc": "off",
+			"jsdoc/no-defaults": "off",
+			"jsdoc/require-returns": "off",
+		},
+		languageOptions: {
+			parserOptions: {
+				projectService: true,
+				tsconfigRootDir: import.meta.dirname,
+			},
 		},
 	},
 );
